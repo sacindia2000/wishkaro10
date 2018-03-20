@@ -1,0 +1,235 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<!-- Fire base files -->
+<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-firestore.js"></script>
+<script src="my-firebaseglobal.js"></script>
+
+
+<dom-module id="my-firestoreinit">
+  <template>
+      <custom-style>
+                
+<style >
+    </style>
+ 
+</template>
+
+  <script>
+      var db;
+      var lastVisible =0;
+      var imagecollection;
+
+    class MyFirestoreinit extends Polymer.Element {
+      static get is() { return 'my-firestoreinit'; }
+      static get properties() {
+        return {
+            _lastVisible:
+            {
+              type: Object
+            },
+            _db :
+            {
+               type: Object
+            },
+            
+           datacollection:
+           {
+               type : String
+           },
+           notifycollection:{
+               type : String
+           },
+           containerdata:{
+            type: Array
+           },
+          dataavailable:
+          {
+              type: Boolean,
+              value:false,
+             notify: true,
+          },
+          dataarray:
+          {
+              type: Array,
+              notify:true
+          },
+          error:
+          {
+              type : String
+          },
+          testobj1 :
+          {
+            type: Object,
+            notify: true,
+            value:
+            {
+              requestdatacount: 0,
+              readdatacount:0
+            }
+        },
+          requestdata:
+          {
+            type: Boolean,
+            value: false,
+            observer: '_RequestForData'
+          },
+          responsedata :
+          {
+              type: Boolean,
+              value: false,
+              notify: true
+          }
+        
+          };
+      }
+
+      _RequestForData( )
+      {
+        // console.log("Received Request for Data");
+         console.log("Data to be Read " + this.testobj1.requestdatacount);
+         if(this.testobj1.requestdatacount)
+         {
+         this.testobj1.contentarray.length = 0;
+         this._Newdatarequest();
+         }
+      }
+      _Newdatarequest( )
+      {
+         
+          console.log("New Data is being requested");
+          if ( this._lastVisible == null )
+          {
+          imagecollection = this._db.collection(this.datacollection).orderBy("created-time")
+          .limit( this.testobj1.requestdatacount);
+          }
+          else
+          {
+            imagecollection = this._db.collection(this.datacollection).orderBy("created-time")
+                            .startAfter(this._lastVisible).limit( this.testobj1.requestdatacount);
+          }
+
+          imagecollection.get().then(function(querySnapshot) {
+            this._lastVisible = querySnapshot.docs[querySnapshot.docs.length-1];
+           
+        querySnapshot.forEach (function(doc) {
+            // doc.data() is never undefined for query doc snapshots
+            /*
+            var data = new Object();
+            data.timestamp = doc.get("created-time");
+            data.linkwebp = doc.get("link-webp");
+            data.linkimage = doc.get("link-jpg");
+            this.push('dataarray',data);
+            */
+            this.testobj1.contentarray.push(doc);
+            debugtotal++;
+          //  console.log(data.timestamp + data.linkwebp);
+        }.bind(this));
+        /* Reset the datarequest count and update total data being read */
+        this.testobj1.readdatacount =querySnapshot.docs.length;
+        this.responsedata = !this.responsedata;
+        console.log("Total element length" + debugtotal );
+
+    }.bind(this))
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+
+      }
+      ready()
+      {
+        super.ready();
+        console.log("MY FIRESTORE IS READY" + this.notifycollection + this.datacollection); 
+        console.log("Value of new data ind" + this.dataavailable);
+        this.dataarray=[];
+        this.testobj1={};
+        this.testobj1.contentarray = [];
+        this._lastVisible = null;
+        this._db = null;
+        if(!firebaseinit)
+        {    
+        this.myfirebaseinit();
+        firebaseinit = 1;
+     //   this._db = firebase.firestore();
+    
+    } 
+        /** Register for data available call back **/
+        this._db = firebase.firestore();
+        this._db.collection(this.notifycollection).onSnapshot(function (querySnapshot) {
+            console.log(" New data is available");
+            this.dataavailable= !this.dataavailable;
+                         
+
+    }.bind(this));
+
+/*
+    setInterval(() => {
+           console.log("Value of new data ind" + this.dataavailable);
+           if(this.dataavailable == 20)           
+            this.dataavailable=10;
+            else
+            this.dataavailable=20; 
+        }, 5000);  
+  */
+      }
+
+      myfirebaseinit( )
+{
+    
+      if (1)
+      {
+        var config = {
+        apiKey: "AIzaSyCA0RlvgN4ZLba2uAuCi3hgZDd0RHpmGJY",
+        authDomain: "wishpix-5fff8.firebaseapp.com",
+        databaseURL: "https://wishpix-5fff8.firebaseio.com",
+        projectId: "wishpix-5fff8",
+        storageBucket: "wishpix-5fff8.appspot.com",
+        messagingSenderId: "281863013543"
+      };
+       firebase.initializeApp(config);
+      firebase.firestore().enablePersistence()
+      .then(function() {
+          // Initialize Cloud Firestore through firebase
+     //     console.log("Persistance enabled");
+          
+      })
+      .catch(function(err) {
+          if (err.code == 'failed-precondition') {
+              // Multiple tabs open, persistence can only be enabled
+              // in one tab at a a time.
+              // ...
+       //       console.log("Persistance failed-precondition");
+          } else if (err.code == 'unimplemented') {
+              // The current browser does not support all of the
+              // features required to enable persistence
+              // ...
+        //      console.log("persistance unimplemented");
+          }
+      });
+      
+      }
+      
+}
+        
+    }
+/**
+ * Initiaze fire base also enable persistance 
+ */
+ 
+
+    window.customElements.define(MyFirestoreinit.is, MyFirestoreinit);
+  </script>
+</dom-module>

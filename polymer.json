@@ -1,0 +1,38 @@
+{
+  
+  "entrypoint": "index.html",
+  "shell": "src/wishkaro-app/wishkaro-app.html",
+  "fragments": [
+    "src/wishkaro-app/my-view1.html",
+    "src/wishkaro-app/my-view2.html",
+    "src/wishkaro-app/my-view3.html",
+    "src/wishkaro-app/my-view4.html",
+    "src/wishkaro-app/my-view5.html",
+    "src/wishkaro-app/my-view6.html",
+    "src/wishkaro-app/my-view404.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "images/**/*"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  },
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    },
+    {
+      "preset": "es6-bundled"
+    },
+    {
+      "preset": "es6-unbundled"
+    }
+  ]
+}

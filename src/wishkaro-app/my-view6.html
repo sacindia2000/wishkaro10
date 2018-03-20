@@ -1,0 +1,175 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-firestoreinit.html">
+
+
+<dom-module id="my-view6">
+  <template>
+      <custom-style>
+                
+<style include="shared-styles iron-flex iron-flex-alignment">
+:host {
+  height: 80vh;
+  display: flex;
+  background-size: cover;
+  flex-direction: column;
+}
+  iron-list {
+    flex: 1 1 auto;
+  }
+.container {
+@apply --layout-vertical;
+@apply --layout-flex;
+@apply --layout-wrap;
+margin-right: 2px;
+margin-left: 2px;
+margin-top: 2px;
+margin-bottom: 2px;
+padding-bottom: 20px;
+}
+.flexchild {
+ @apply --layout-flex;
+ @apply --layout-horizontal;
+ @apply --layout-wrap;
+ margin-right: 2px;
+ margin-left: 2px;
+
+}
+.imagecontainer
+{
+ margin-top:2px;
+ margin-bottom:2px
+}
+
+    </style>
+    
+    
+  <div class = "container">
+  <iron-list items="[[imagearray]]" as="item" id = "itemlist" scroll-target= "document"  selected-item = "{{selectedItem}}" grid>
+    <template>
+        <div class = "flexchild"style="width:50%"> 
+      <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:180px;"
+      src=[[item.linkwebp]]></iron-image>
+       
+    </div>
+  
+    </template>
+  </iron-list>
+</div>
+<my-firestoreinit datacollection = "wishimages" notifycollection = "dataupdated"
+                  dataavailable = "{{newdataind}}" dataarray = "{{imagearray}}" 
+                  testobj1 = "{{testobj}}" requestdata = "{{datarequest}}"
+                  responsedata = "{{dataresponse}}"></my-firestoreinit>
+<paper-spinner active></paper-spinner>
+
+
+</template>
+
+  <script>
+    var lastreadindex = 0;
+    class MyView6 extends Polymer.Element {
+      static get is() { return 'my-view6'; }
+      static get properties() {
+        return {
+           imagearray: {
+            type: Array
+          },
+          scrollTarget: HTMLElement,
+          selectedItem:
+          {
+            type:Number,
+            observer: '_itemSelected'
+          },
+          newdataind :
+          {
+            type: Boolean,
+            observer: '_Dataavailableind'
+          },
+          datarequest:
+          {
+             type:Boolean,
+             notify:true,
+             value: false
+          },
+          dataresponse:
+          {
+            type:Boolean,
+            value: false,
+            observer : '_DataResponse'
+          },
+          testobj :
+          {
+            type: Object,
+            notify:true,
+            value:
+            {
+              requestdatacount: 0,
+              readdatacount:0
+            }
+
+          }
+          };
+      }
+
+      _DataResponse()
+      {
+        console.log("Dat Read is "+ this.testobj.readdatacount);
+        
+        if(this.testobj.readdatacount == 2)
+            {
+            this.testobj.requestdatacount =2;
+            
+            for (var i = 0, len = this.testobj.contentarray.length; i < len; i++) {
+            var data = new Object();
+            data.timestamp = this.testobj.contentarray[i].get("created-time");
+            data.linkwebp = this.testobj.contentarray[i].get("link-webp");
+            data.linkimage = this.testobj.contentarray[i].get("link-jpg");
+            this.push('imagearray',data);
+            }
+            this.testobj.contentarray.length =0;
+            this.datarequest = !this.datarequest;
+            }
+           
+      }
+      _itemSelected()
+      {
+         console.log("Iron-scroll item selected observer");
+         console.log(this.selectedItem);
+      }
+      _Dataavailableind(  )
+      {
+            console.log("Data available observer called");
+      }
+      ready()
+      {
+        super.ready();
+        this.$.itemlist.selectionEnabled = true;
+        this.imagearray = [];
+        this.testobj.requestdatacount =2;
+        this.testobj.contentarray = [];
+        this.datarequest = !this.datarequest;
+        
+        /*
+        setInterval(() => {
+              }, 5000);
+        */        
+      }
+        
+    }
+
+    window.customElements.define(MyView6.is, MyView6);
+  </script>
+</dom-module>
