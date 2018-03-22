@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-firestoreinit.html">
 
@@ -68,18 +69,26 @@ padding-bottom: 20px;
   
     </template>
   </iron-list>
-</div>
-<my-firestoreinit datacollection = "wishimages" notifycollection = "dataupdated"
-                  dataavailable = "{{newdataind}}" dataarray = "{{imagearray}}" 
-                  testobj1 = "{{testobj}}" requestdata = "{{datarequest}}"
-                  responsedata = "{{dataresponse}}"></my-firestoreinit>
+  <my-firestoreinit datacollection = "wishimages" notifycollection = "dataupdated"
+  dataavailable = "{{newdataind}}" dataarray = "{{imagearray}}" 
+  testobj1 = "{{testobj}}" requestdata = "{{datarequest}}"
+  responsedata = "{{dataresponse}}"></my-firestoreinit>
 <paper-spinner active></paper-spinner>
+</div>
+
 
 
 </template>
 
   <script>
-    var lastreadindex = 0;
+    const  myviewstate = 
+    {
+      Init : 0,
+      DataRequestSent : 1,
+      DataResponseReceived : 2,
+      NoMoreData:3
+    }
+    var State;
     class MyView1 extends Polymer.Element {
       static get is() { return 'my-view1'; }
       static get properties() {
@@ -120,62 +129,107 @@ padding-bottom: 20px;
               readdatacount:0
             }
 
+          },
+          _datastatus:
+          {
+            type : Object,
           }
           };
       }
-
+      _LowerThreshold()
+      {
+        console.log("Lower Threshold");
+      }
       _DataResponse()
       {
-        console.log("Dat Read is "+ this.testobj.readdatacount);
-        
-        if(this.testobj.readdatacount == 8)
-            {
-            this.testobj.requestdatacount =8;
-            
-            for (var i = 0, len = this.testobj.contentarray.length; i < len; i++) {
+        console.log("Data Read is "+ this.testobj.readdatacount);
+        if(this.testobj.readdatacount >= 0  )
+        { 
+        /* Update Data to array **/
+        this._datastatus.DataResponseCount = this.testobj.readdatacount;
+         for (var i = 0, len = this.testobj.contentarray.length; i < len; i++) {
             var data = new Object();
             data.timestamp = this.testobj.contentarray[i].get("created-time");
             data.linkwebp = this.testobj.contentarray[i].get("link-webp");
             data.linkimage = this.testobj.contentarray[i].get("link-jpg");
             this.push('imagearray',data);
             }
-            this.testobj.contentarray.length =0;
-            this.datarequest = !this.datarequest;
-            }
-           
+            State = myviewstate.DataResponseReceived;
+
+        if (this._datastatus.DataResponseCount < this._datastatus.DataRequestCount ) 
+        {
+          console.log("More data available");
+          State = myviewstate.NoMoreData;
+        //  this._UpdateNewdata(this._datastatus.DataRequestCount);
+        }
+      }      
+          
       }
       _itemSelected()
       {
-         console.log("Iron-scroll item selected observer");
+         console.log("Iron-list item selected observer" + this);
          console.log(this.selectedItem);
       }
       _Dataavailableind(  )
       {
             console.log("Data available observer called");
+        //    if(this._datastatus.DataRequestCount > 0)
+          //  this._UpdateNewdata( this._datastatus.DataRequestCount );   
+            
       }
+     
+      handleTrackEvent (evt)
+      {
+     
+        if(( this.$.itemlist.lastVisibleIndex >= (this.imagearray.length-3) ))
+             
+        {
+             console.log("Need more data");
+             if(( State == myviewstate.DataResponseReceived || State == myviewstate.Init ) && (State != myviewstate.NoMoreData))
+             this._UpdateNewdata(this._datastatus.DataRequestCount);
+        }
+
+        Polymer.Gestures.setTouchAction(this,"auto");
+      }
+      constructor() {
+          super();
+          this.imagearray = [];
+          this.testobj.contentarray = [];
+          this._DataIntanceInit();
+          }
       ready()
       {
         super.ready();
         this.$.itemlist.selectionEnabled = true;
-        this.imagearray = [];
-        this.testobj.requestdatacount =8;
-        this.testobj.contentarray = [];
-        this.datarequest = !this.datarequest;
-        document.addEventListener('backbutton', function(ev) {
-        
-          alert("Back Button Press");
-        });
-        window.onhashchange = function() {       
-          alert("Back Button Press");
-
-          }
+     //  this.imagearray = [];
+      // this.testobj.contentarray = [];
+     //   this._DataIntanceInit();
+        Polymer.Gestures.addListener(this, 'track', e => this.handleTrackEvent(e));
+        /* As system is ready request for data to be filled in **/
+        this._UpdateNewdata( this._datastatus.DataRequestCount );   
+        State = myviewstate.Init;
         /*
         setInterval(() => {
               }, 5000);
         */        
       }
+      _UpdateNewdata( length )
+       {
+            State = myviewstate.DataRequestSent;
+            this.testobj.requestdatacount =length;
+            this.datarequest = !this.datarequest;
+       }
+       _DataIntanceInit( )
+       {
+         this._datastatus ={};
+         this._datastatus.TotalDataCount = 0;
+         this._datastatus.DataRequestCount =8;
+         this._datastatus.DataResponseCount =0;
+       }
         
     }
+
+      
 
     window.customElements.define(MyView1.is, MyView1);
   </script>

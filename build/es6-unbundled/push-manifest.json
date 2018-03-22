@@ -355,6 +355,14 @@
     "bower_components/iron-icons/iron-icons.html": {
       "type": "document",
       "weight": 1
+    },
+    "bower_components/paper-styles/typography.html": {
+      "type": "document",
+      "weight": 1
+    },
+    "bower_components/font-roboto/roboto.html": {
+      "type": "document",
+      "weight": 1
     }
   },
   "src/wishkaro-app/my-view1.html": {
