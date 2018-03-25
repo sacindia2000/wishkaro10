@@ -13,6 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html" />
+
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-firestoreinit.html">
 
@@ -73,7 +75,9 @@ padding-bottom: 20px;
   dataavailable = "{{newdataind}}" dataarray = "{{imagearray}}" 
   testobj1 = "{{testobj}}" requestdata = "{{datarequest}}"
   responsedata = "{{dataresponse}}"></my-firestoreinit>
-<paper-spinner active></paper-spinner>
+  <paper-spinner active></paper-spinner>
+  <paper-dialog id="userdetails">
+       </paper-dialog>
 </div>
 
 
@@ -130,6 +134,11 @@ padding-bottom: 20px;
             }
 
           },
+          objectselected:
+          {
+            type: Object,
+            notify: true
+          },
           _datastatus:
           {
             type : Object,
@@ -168,7 +177,13 @@ padding-bottom: 20px;
       _itemSelected()
       {
          console.log("Iron-list item selected observer" + this);
+         if(this.selectedItem != null )
+         {
          console.log(this.selectedItem);
+         this.selectedItem.name = "LightBox";
+         this.objectselected = this.selectedItem;         
+        }
+
       }
       _Dataavailableind(  )
       {
@@ -185,6 +200,8 @@ padding-bottom: 20px;
              
         {
              console.log("Need more data");
+             this.$.userdetails.open();
+
              if(( State == myviewstate.DataResponseReceived || State == myviewstate.Init ) && (State != myviewstate.NoMoreData))
              this._UpdateNewdata(this._datastatus.DataRequestCount);
         }
