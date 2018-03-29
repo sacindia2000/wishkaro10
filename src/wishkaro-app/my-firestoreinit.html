@@ -113,12 +113,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("New Data is being requested");
           if ( this._lastVisible == null )
           {
-          imagecollection = this._db.collection(this.datacollection).orderBy("created-time")
+          imagecollection = this._db.collection(this.datacollection).orderBy("created-time","desc")
           .limit( this.testobj1.requestdatacount);
           }
           else
           {
-            imagecollection = this._db.collection(this.datacollection).orderBy("created-time")
+            imagecollection = this._db.collection(this.datacollection).orderBy("created-time","desc")
                             .startAfter(this._lastVisible).limit( this.testobj1.requestdatacount);
           }
 
@@ -134,6 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             data.linkimage = doc.get("link-jpg");
             this.push('dataarray',data);
             */
+            console.log("Time Stamp +++++ " + doc.get("created-time"));
             this.testobj1.contentarray.push(doc);
             debugtotal++;
           //  console.log(data.timestamp + data.linkwebp);
@@ -167,9 +168,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     
     } 
         /** Register for data available call back **/
+        
         this._db = firebase.firestore();
-        this._db.collection(this.notifycollection).onSnapshot(function (querySnapshot) {
+        
+        this._db.collection(this.datacollection).onSnapshot(function (doc) {
             console.log(" New data is available");
+            console.log("Current data: ", doc);
+
             this.dataavailable= !this.dataavailable;
                          
 

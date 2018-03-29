@@ -49,6 +49,10 @@
         font-size: 20px;
         line-height: 28px;
         font-weight: bold;
+        height: 48px;
+        padding-left : 0px;
+        padding-right: 0px;
+
     }
    paper-tabs
    {
@@ -59,16 +63,14 @@
 </style>
  <app-header-layout fullbleed>
 
-  <app-header  slot="header">
-        <app-toolbar>
-        <paper-icon-button hidden$= "{{hidebackarrow}}" icon="arrow-back" on-tap = "backarrowtapped"></paper-icon-button>
-        <div  class="paper-font-title" style = "padding-top:40px; padding-left:30%">{{maintitle}}</div>
+  <app-header slot="header">
+        <app-toolbar sticky>
+        <div  class="paper-font-title" style = "padding-left:137px;padding-top:20px;">{{maintitle}}</div>
         </app-toolbar>
-
         <paper-tabs hidden$="{{hideme}}"  id = "mytabs" selected="{{page}}" attr-for-selected="name">
           <paper-tab name = "view1" >POPULAR</paper-tab>
           <paper-tab name = "view2" >CATEGORIES</paper-tab>
-     </paper-tabs>
+  </paper-tabs>
 
     </app-header>
 
@@ -231,6 +233,8 @@
         this.maintitle = "WiskKaro";
 
       }
+
+
 
     }
 
