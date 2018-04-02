@@ -68,11 +68,7 @@
       "type": "document",
       "weight": 1
     },
-    "bower_components/app-layout/app-layout.html": {
-      "type": "document",
-      "weight": 1
-    },
-    "bower_components/app-layout/helpers/helpers.html": {
+    "bower_components/app-route/app-route.html": {
       "type": "document",
       "weight": 1
     },
@@ -188,6 +184,30 @@
       "type": "document",
       "weight": 1
     },
+    "bower_components/app-route/app-location.html": {
+      "type": "document",
+      "weight": 1
+    },
+    "bower_components/iron-location/iron-location.html": {
+      "type": "document",
+      "weight": 1
+    },
+    "bower_components/iron-location/iron-query-params.html": {
+      "type": "document",
+      "weight": 1
+    },
+    "bower_components/app-route/app-route-converter-behavior.html": {
+      "type": "document",
+      "weight": 1
+    },
+    "bower_components/app-layout/app-layout.html": {
+      "type": "document",
+      "weight": 1
+    },
+    "bower_components/app-layout/helpers/helpers.html": {
+      "type": "document",
+      "weight": 1
+    },
     "bower_components/app-layout/app-drawer/app-drawer.html": {
       "type": "document",
       "weight": 1
@@ -237,10 +257,6 @@
       "weight": 1
     },
     "bower_components/app-layout/app-box/app-box.html": {
-      "type": "document",
-      "weight": 1
-    },
-    "bower_components/app-layout/app-scroll-effects/effects/waterfall.html": {
       "type": "document",
       "weight": 1
     },
@@ -334,18 +350,6 @@
     },
     "bower_components/iron-flex-layout/iron-flex-layout-classes.html": {
       "type": "document",
-      "weight": 1
-    },
-    "bower_components/iron-scroll-threshold/iron-scroll-threshold.html": {
-      "type": "document",
-      "weight": 1
-    },
-    "bower_components/app-route/app-route.html": {
-      "type": "document",
-      "weight": 1
-    },
-    "bower_components/page/page.js": {
-      "type": "script",
       "weight": 1
     },
     "bower_components/iron-pages/iron-pages.html": {

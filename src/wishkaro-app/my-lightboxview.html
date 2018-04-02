@@ -27,7 +27,6 @@
     -->
     <img    style = "width:366px; height:366px; background-color: lightgray;"
      src="[[objectselected.linkimage]]"></img>
-    
 <!--
 <img alt="Embedded" src="https://pbs.twimg.com/media/DZVruAIVAAE4VqC?format=jpg" style = "width:366px; height:366px; background-color: lightgray;"> 
 -->
@@ -49,8 +48,20 @@
           objectselected:
           {
             type: Object,
+            notify:true,
+            observer: '_lightboxready',
+
           }
         };
+      }
+         ready()
+         {
+           super.ready();
+           console.log("LightBox is READY");
+         }
+      _lightboxready()
+      {
+        console.log("Render new object");
       }
     }
 

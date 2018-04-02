@@ -64,11 +64,10 @@ padding-bottom: 20px;
   <iron-list items="[[imagearray]]" as="item" id = "itemlist" scroll-target= "document"  selected-item = "{{selectedItem}}" grid>
     <template>
         <div class = "flexchild"style="width:50%"> 
-      <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:180px; background-color: lightgray;"
-                   preload fade src=[[item.linkwebp]]></iron-image>
-       
-    </div>
-  
+          <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:180px; background-color: lightgray;"
+                       preload fade src=[[item.linkwebp]]></iron-image>
+                   
+        </div>
     </template>
   </iron-list>
   <my-firestoreinit datacollection = "wishimages" notifycollection = "dataupdated"
@@ -79,11 +78,7 @@ padding-bottom: 20px;
   <paper-dialog id="userdetails">
        </paper-dialog>
 </div>
-
-
-
 </template>
-
   <script>
     const  myviewstate = 
     {
@@ -177,13 +172,15 @@ padding-bottom: 20px;
       _itemSelected()
       {
          console.log("Iron-list item selected observer" + this);
+         
+        
          if(this.selectedItem != null )
          {
          console.log(this.selectedItem);
-         this.selectedItem.name = "LightBox";
-         this.objectselected = this.selectedItem;         
+          this.selectedItem.name = "LightBox";
+          this.objectselected = this.selectedItem;         
         }
-
+       
       }
       _Dataavailableind(  )
       {

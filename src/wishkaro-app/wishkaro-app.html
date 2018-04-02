@@ -1,27 +1,23 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-<link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 
 
-
-
 <dom-module id="wishkaro-app">
-  <template id = "templateID">
+  <template>
 <style>
       [hidden] {
           display: none;
@@ -32,6 +28,7 @@
         margin: 0;
         display: flex;
         background-size: cover;
+        background-color: #EFEFEF;
         flex-direction: column;
         --app-primary-color: #5031AA;
         --app-secondary-color: black;
@@ -61,28 +58,32 @@
     z-index:1;
    }
 </style>
+<app-location route="{{route}}"></app-location>
+<app-route route="{{route}}" pattern="/:view" data="{{data}}"></app-route>
+
  <app-header-layout fullbleed>
 
   <app-header slot="header">
         <app-toolbar sticky>
+        <paper-icon-button hidden$= "{{hidebackarrow}}" icon="arrow-back" on-click = "backarrowtapped">
+
+        </paper-icon-button>
         <div  class="paper-font-title" style = "padding-left:137px;padding-top:20px;">{{maintitle}}</div>
         </app-toolbar>
-        <paper-tabs hidden$="{{hideme}}"  id = "mytabs" selected="{{page}}" attr-for-selected="name">
-          <paper-tab name = "view1" >POPULAR</paper-tab>
-          <paper-tab name = "view2" >CATEGORIES</paper-tab>
-  </paper-tabs>
+        <paper-tabs hidden$="{{hideme}}"  id = "mytabs" selected="{{data.view}}" attr-for-selected="name">
+            <paper-tab name = "view1" >POPULAR</paper-tab>
+            <paper-tab name = "view2" >CATEGORIES</paper-tab>
+          </paper-tabs> 
+  </app-header>
 
-    </app-header>
-
-
-    <iron-pages
-       selected="{{page}}"
-       attr-for-selected="name"
-       fallback-selection="view404"
-       role="main">
-
-    <my-view1 objectselected = "{{testitem}}" name="view1"></my-view1>
-    <my-view2 objectselected = "{{testitem}}"  name="view2"></my-view2>
+  <iron-pages
+     selected="{{data.view}}"
+     attr-for-selected="name"
+     fallback-selection="view404"
+     role="main">
+    <my-view1 objectselected = "{{viewobject}}" name="view1"></my-view1>
+    <my-view2 objectselected = "{{viewobject}}"  name="view2"></my-view2>
+    
     <my-view3 chngpage = "{{page}}" hidetab="{{hideme}}" hidebackarrow="{{hidebackarrow}}"
               name="view3"></my-view3>
     <my-view4 chngpage = "{{page}}" hidetab="{{hideme}}" hidebackarrow="{{hidebackarrow}}"
@@ -91,10 +92,9 @@
               name="view5"></my-view5>
     <my-view6 chngpage = "{{page}}" hidetab="{{hideme}}" hidebackarrow="{{hidebackarrow}}"
               name="view6"></my-view6>
-     <my-lightboxview  objectselected = "{{testitem}}" name = "lightboxview"></my-lightboxview>         
-
-
+    <my-lightboxview  objectselected = "{{viewobject}}" name = "lightboxview"></my-lightboxview>
     <my-view404 name="view404"></my-view404>
+    
   </iron-pages>
  </app-header-layout>
  </template>
@@ -113,7 +113,7 @@
             type: String,
             value: 'wishkaro-app'
           },
-          page: {
+          data: {
             type: String,
             reflectToAttribute: true,
             observer: '_pageChanged',
@@ -133,11 +133,11 @@
           type: Boolean,
           value: true
         },
-        testitem:
+        viewobject:
         {
           type : Object,
           notify : true,
-          observer : '_testitemchanged'
+          observer : '_viewobjectchanged'
         },
           myProperty:Boolean,
           routeData: Object,
@@ -154,9 +154,10 @@
       }
 
       _routePageChanged(page) {
+        console.log("_routePageChanged");
         // If no page was found in the route data, page will be an empty string.
         // Default to 'view1' in that case.
-         this.page = page || 'view1';
+         this.data.view = page || 'view1';
 
         // Close a non-persistent drawer when the page & route are changed.
        // if (!this.$.drawer.persistent) {
@@ -166,7 +167,8 @@
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        console.log("My URL Object" + page.view);
+        var resolvedPageUrl = this.resolveUrl('my-' + page.view + '.html');
         Polymer.importHref(
             resolvedPageUrl,
             null,
@@ -176,45 +178,60 @@
       }
 
       _showPage404() {
-        this.page = 'view404';
+        this.data.view = 'view404';
+      }
+      constructor() {
+        super();
+        console.log("Constructor");
+        this.data = {view:'view1' };
+      
       }
       ready()
       {
         super.ready();
+        console.log("Ready");
+        this.data = {view:'view1' };
+
       }
-      _testitemchanged()
+      _viewobjectchanged()
       {
         console.log('Item has changed need to check');
-        console.log(this.testitem);
-        if(this.testitem != null)
+        console.log(this.viewobject);
+        if(this.viewobject != null)
         {
         this. hidebackarrow= false;
         this.hideme = true;
-        if(this.testitem.name === "Wedding")
+        if(this.viewobject.name === "Wedding")
         {
-           this.page = "view3";
+          // this.data.view = "view3";
+           this.set('data.view', 'view3');
            this.maintitle = "Wedding Wishes";
         }
-        else if (this.testitem.name === "Birthday")
+        else if (this.viewobject.name === "Birthday")
         {
-          this.page = "view4";
+         // this.data.view = "view4";
+          this.set('data.view', 'view4');
           this.maintitle = "Happy Birthday";
         }
-        else if (this.testitem.name === "GoodMorning")
+        else if (this.viewobject.name === "GoodMorning")
         {
-          this.page = "view5";
+          //this.data.view = "view5";
+          this.set('data.view', 'view5');
           this.maintitle = "Good Morning";
 
         }
-        else if (this.testitem.name === "GoodNight")
+        else if (this.viewobject.name === "GoodNight")
         {
-          this.page = "view6";
+          //this.data.view = "view6";
+          this.set('data.view', 'view6');
           this.maintitle = "Good Night";
 
-        } else if (this.testitem.name === "LightBox")
+        } else if (this.viewobject.name === "LightBox")
         {
             console.log("Lightbox view selected");
-            this.page = "lightboxview";
+            var url = "lightboxview/" + this.viewobject.linkimage;
+            this.set('data.view', url);
+            
 
         }
         else
@@ -227,10 +244,10 @@
       backarrowtapped()
       {
         console.log("Back Arrow tapped");
-        this.page = "view1";
+        this.set('data.view', 'view1');
         this. hidebackarrow= true;
         this.hideme = false;
-        this.maintitle = "WiskKaro";
+        this.maintitle = "WishKaro";
 
       }
 
