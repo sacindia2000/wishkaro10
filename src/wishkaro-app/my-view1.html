@@ -42,7 +42,40 @@ margin-left: 2px;
 margin-top: 2px;
 margin-bottom: 2px;
 padding-bottom: 20px;
+/* Animation */
+-webkit-animation: slideIn .25s forwards;
+-moz-animation: slideIn .25s forwards;
+animation: slideIn .25s forwards;
+-webkit-animation-timing-function: ease; /* Safari 4.0 - 8.0 */
+animation-timing-function: ease;
+
 }
+
+@-webkit-keyframes slideIn {
+  0% {
+    transform: translateX(-900px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@-moz-keyframes slideIn {
+  0% {
+    transform: translateX(-900px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes slideIn {
+  0% {
+    transform: translateX(-900px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+/*****************************************/
 .flexchild {
  @apply --layout-flex;
  @apply --layout-horizontal;
@@ -56,7 +89,39 @@ padding-bottom: 20px;
  margin-top:2px;
  margin-bottom:2px
 }
-
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein { /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein { /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+  
     </style>
     
     
@@ -70,10 +135,12 @@ padding-bottom: 20px;
         </div>
     </template>
   </iron-list>
+  
   <my-firestoreinit datacollection = "wishimages" notifycollection = "dataupdated"
   dataavailable = "{{newdataind}}" dataarray = "{{imagearray}}" 
   testobj1 = "{{testobj}}" requestdata = "{{datarequest}}"
   responsedata = "{{dataresponse}}"></my-firestoreinit>
+  
   <paper-spinner active></paper-spinner>
   <paper-dialog id="userdetails">
        </paper-dialog>

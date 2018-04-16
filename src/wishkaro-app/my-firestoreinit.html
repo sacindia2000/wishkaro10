@@ -113,12 +113,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("New Data is being requested");
           if ( this._lastVisible == null )
           {
-          imagecollection = this._db.collection(this.datacollection).orderBy("created-time","desc")
+          imagecollection = gdatabase.collection(this.datacollection).orderBy("created-time","desc")
           .limit( this.testobj1.requestdatacount);
           }
           else
           {
-            imagecollection = this._db.collection(this.datacollection).orderBy("created-time","desc")
+            imagecollection = gdatabase.collection(this.datacollection).orderBy("created-time","desc")
                             .startAfter(this._lastVisible).limit( this.testobj1.requestdatacount);
           }
 
@@ -164,14 +164,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         {    
         this.myfirebaseinit();
         firebaseinit = 1;
+        gdatabase = firebase.firestore();
+
      //   this._db = firebase.firestore();
     
     } 
         /** Register for data available call back **/
         
-        this._db = firebase.firestore();
         
-        this._db.collection(this.datacollection).onSnapshot(function (doc) {
+        gdatabase.collection(this.datacollection).onSnapshot(function (doc) {
             console.log(" New data is available");
             console.log("Current data: ", doc);
 
