@@ -48,6 +48,8 @@ padding-bottom: 20px;
 animation: slideIn .25s forwards;
 -webkit-animation-timing-function: ease; /* Safari 4.0 - 8.0 */
 animation-timing-function: ease;
+position: relative;
+top:92px;
 
 }
 
@@ -204,7 +206,36 @@ animation-timing-function: ease;
           _datastatus:
           {
             type : Object,
-          }
+          },
+          chngpage:
+          {
+            type: String,
+            notify: true,
+            observer : '_pagechanged'
+          },
+          hidetabs:
+          {
+            type: Boolean,
+            notify: true
+          },
+          title:
+           {
+             type: String,
+             value: "Wish Karo",
+             notify:true
+           },
+           primarycolour:
+           {
+             type:String,
+             value:"#5031AA",
+             notify:true
+           },
+           hidebackarrow:
+           {
+             type: Boolean,
+             value: false,
+             notify:true
+           }
           };
       }
       _LowerThreshold()
@@ -307,7 +338,17 @@ animation-timing-function: ease;
          this._datastatus.DataRequestCount =8;
          this._datastatus.DataResponseCount =0;
        }
-        
+       _pagechanged()
+      {
+        console.log("PAGE CHANGED"+ this.chngpage);
+        if (this.chngpage === 'view1')
+        {
+          this.title = "Wish Karo";
+          this. primarycolour = '#5031AA';
+          this.hidebackarrow = true;
+          this.hidetabs = false;
+        }
+      }  
     }
 
       

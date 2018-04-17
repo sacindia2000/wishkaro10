@@ -29,6 +29,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 }
   iron-list {
     flex: 1 1 auto;
+    position: relative;
+    
   }
 .container {
 @apply --layout-vertical;
@@ -39,6 +41,8 @@ margin-left: 2px;
 margin-top: 2px;
 margin-bottom: 2px;
 padding-bottom: 20px;
+position: relative;
+top:42px;
 }
 .flexchild {
  @apply --layout-flex;
@@ -61,7 +65,7 @@ padding-bottom: 20px;
   <iron-list items="[[imagearray]]" as="item" id = "itemlist" scroll-target= "document"  selected-item = "{{selectedItem}}" grid>
     <template>
         <div class = "flexchild"style="width:50%"> 
-      <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:180px;"
+      <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:260px;"
       src=[[item.linkwebp]]></iron-image>
        
     </div>
@@ -84,6 +88,24 @@ padding-bottom: 20px;
       static get is() { return 'my-view3'; }
       static get properties() {
         return {
+           title:
+           {
+             type: String,
+             value: "Love & Romance",
+             notify:true
+           },
+           primarycolour:
+           {
+             type:String,
+             value:"#5031AA",
+             notify:true
+           },
+           hidebackarrow:
+           {
+             type: Boolean,
+             value: false,
+             notify:true
+           },
            imagearray: {
             type: Array
           },
@@ -120,10 +142,31 @@ padding-bottom: 20px;
               readdatacount:0
             }
 
+          },
+          chngpage:
+          {
+            type: String,
+            notify: true,
+            observer : '_pagechanged'
+          },
+          hidetabs:
+          {
+            type: Boolean,
+            notify: true
           }
           };
       }
-
+      _pagechanged()
+      {
+        console.log("PAGE CHANGED"+ this.chngpage);
+        if (this.chngpage === 'view3')
+        {
+          this.title = "LOVE";
+          this. primarycolour = '#FFB6C1';
+          this.hidebackarrow = false;
+          this.hidetabs = true;
+        }
+      }
       _DataResponse()
       {
         console.log("Dat Read is "+ this.testobj.readdatacount);

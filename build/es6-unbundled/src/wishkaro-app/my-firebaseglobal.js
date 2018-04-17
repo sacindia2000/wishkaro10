@@ -1,1 +1,1 @@
-var firebaseinit=0,debugtotal=0;
+var firebaseinit=0,debugtotal=0,gdatabase=0;

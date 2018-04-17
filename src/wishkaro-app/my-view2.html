@@ -46,6 +46,8 @@ animation: slideIn .25s forwards;
 -webkit-animation-timing-function: ease; /* Safari 4.0 - 8.0 */
 animation-timing-function: ease;
 /*********************/
+position: relative;
+top:92px;
 }
 .flexchild {
  @apply --layout-flex;
@@ -200,7 +202,36 @@ animation-timing-function: ease;
           {
             type: Object,
             notify: true
-          }
+          },
+          chngpage:
+          {
+            type: String,
+            notify: true,
+            observer : '_pagechanged'
+          },
+          hidetabs:
+          {
+            type: Boolean,
+            notify: true
+          },
+          title:
+           {
+             type: String,
+             value: "Love & Romance",
+             notify:true
+           },
+           primarycolour:
+           {
+             type:String,
+             value:"#5031AA",
+             notify:true
+           },
+           hidebackarrow:
+           {
+             type: Boolean,
+             value: false,
+             notify:true
+           }
           };
       }
 
@@ -251,6 +282,17 @@ animation-timing-function: ease;
               }, 5000);
         */        
       }
+      _pagechanged()
+      {
+        console.log("PAGE CHANGED"+ this.chngpage);
+        if (this.chngpage === 'view2')
+        {
+          this.title = "Wish Karo";
+          this. primarycolour = '#5031AA';
+          this.hidebackarrow = true;
+          this.hidetabs = false;
+        }
+      }  
         
     }
 

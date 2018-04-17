@@ -39,6 +39,8 @@ margin-left: 2px;
 margin-top: 2px;
 margin-bottom: 2px;
 padding-bottom: 20px;
+position: relative;
+top:42px;
 }
 .flexchild {
  @apply --layout-flex;
@@ -61,7 +63,7 @@ padding-bottom: 20px;
   <iron-list items="[[imagearray]]" as="item" id = "itemlist" scroll-target= "document"  selected-item = "{{selectedItem}}" grid>
     <template>
         <div class = "flexchild"style="width:50%"> 
-      <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:180px;"
+      <iron-image  class = "imagecontainer" sizing = "cover" style = "width:calc(100% - 4px); height:260px;"
       src=[[item.linkwebp]]></iron-image>
        
     </div>
@@ -120,7 +122,36 @@ padding-bottom: 20px;
               readdatacount:0
             }
 
-          }
+          },
+          chngpage:
+          {
+            type: String,
+            notify: true,
+            observer : '_pagechanged'
+          },
+          hidetabs:
+          {
+            type: Boolean,
+            notify: true
+          },
+          title:
+           {
+             type: String,
+             value: "Wish Karo",
+             notify:true
+           },
+           primarycolour:
+           {
+             type:String,
+             value:"#5031AA",
+             notify:true
+           },
+           hidebackarrow:
+           {
+             type: Boolean,
+             value: false,
+             notify:true
+           }
           };
       }
 
@@ -166,6 +197,18 @@ padding-bottom: 20px;
         setInterval(() => {
               }, 5000);
         */        
+      }
+
+          _pagechanged()
+      {
+        console.log("PAGE CHANGED"+ this.chngpage);
+        if (this.chngpage === 'view5')
+        {
+          this.title = "Good Morning";
+          this. primarycolour = '#FFA500';
+          this.hidebackarrow = false;
+          this.hidetabs = true;
+        }
       }
         
     }
